@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS pssc.imoveis_mun
 			FROM 
 				pssc.imoveis
 			LIMIT 0
-
+;
 
 DO $$
 	DECLARE
@@ -38,8 +38,8 @@ DO $$
 						m.geom				as geom
 					FROM
 						public.br_municipios_2021 m
-					WHERE
-						sigla='AC'
+-- 					WHERE
+-- 						sigla='AC'
 					ORDER BY
 						cd_mun
 			LOOP
