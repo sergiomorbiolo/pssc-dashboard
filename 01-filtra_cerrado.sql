@@ -26,6 +26,7 @@ DO $$
 		x record;
 		y record;
 		z record;
+		w record;
 		munx varchar[];
 		j int:=0;
     BEGIN
@@ -80,29 +81,42 @@ DO $$
 		END LOOP;
 		
 		
-		for y in
-			select 
-					id		as id,
-					geom	as geom
-				from 
-					pssc.imoveis i
-		loop
-			munx:=null;
-			j:=0;
-			for z in
-				select
-						cd_mun
-					from public.br_municipios_2021 m
-					WHERE
-						ST_Intersects (y.geom, m.geom)
-			loop
-				munx[j]:=z.cd_mun;
-				j:=j+1;
-			end loop;
-			update pssc.imoveis set municipios=munx WHERE id=y.id;
-		end loop;
-
-		
+		FOR w IN
+			SELECT 
+					max(id) AS maximo 
+				FROM 
+					pssc.imoveis		
+		LOOP
+			FOR y IN
+				SELECT 
+						id		as id,
+						geom	as geom
+					FROM 
+						pssc.imoveis i
+					ORDER BY
+						id
+			LOOP
+				RAISE INFO '-- Definição de Municípios: Imóvel %/%', y.id, w.maximo;
+				munx:=null;
+				j:=0;
+				FOR z IN
+					SELECT
+							cd_mun
+						FROM 
+							psscx.municipios m
+						WHERE
+							ST_Intersects (y.geom, m.geom)
+				LOOP
+					munx[j]:=z.cd_mun;
+					j:=j+1;
+				END LOOP;
+				UPDATE 
+						pssc.imoveis 
+					SET 
+						municipios=munx 
+					WHERE id=y.id;
+			END LOOP;
+		END LOOP;
 	END;
 $$;
 

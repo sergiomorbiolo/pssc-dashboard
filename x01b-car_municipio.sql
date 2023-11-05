@@ -24,7 +24,7 @@ DO $$
 			SELECT
 					count(*)	as total
 				from
-					public.br_municipios_2021
+					psscx.municipios
 		LOOP
 			FOR x IN 
 				SELECT
@@ -33,7 +33,7 @@ DO $$
 						m.sigla 			as uf,
 						m.geom				as geom
 					FROM
-						public.br_municipios_2021 m
+						psscx.municipios m
 -- 					WHERE
 -- 						sigla='AC'
 					ORDER BY
