@@ -3,15 +3,19 @@ do $$ begin	raise info 'x01 - Filtra e Aglutina imóveis por município'; end; $
 -- Aglutina os imóveis registrados no CAR para cada município
 -- ================================================================================
 
-DROP TABLE IF EXISTS psscx.car_mun;
-CREATE TABLE IF NOT EXISTS psscx.car_mun
-(
-	id serial,
-    cod_municipio text COLLATE pg_catalog."default",
-    municipio text COLLATE pg_catalog."default",
-    uf text COLLATE pg_catalog."default",
-    geom geometry(Geometry,4674)
-);
+DROP TABLE IF EXISTS pssc.imoveis_mun;
+CREATE TABLE IF NOT EXISTS pssc.imoveis_mun
+	AS
+		SELECT
+				id				AS id,
+				car				AS car,
+				uf				AS uf,
+				municipio		AS municipio,
+				cod_municipio	AS cod_municipio,
+				geom			AS geom
+			FROM 
+				pssc.imoveis
+			LIMIT 0
 
 
 DO $$
@@ -34,30 +38,35 @@ DO $$
 						m.geom				as geom
 					FROM
 						public.br_municipios_2021 m
--- 					WHERE
--- 						sigla='AC'
+					WHERE
+						sigla='AC'
 					ORDER BY
 						cd_mun
 			LOOP
 				numero:=numero+1;
 				RAISE INFO '-- %/% % - % %', numero, y.total, upper(x.uf), x.cod_municipio, x.municipio;
-				INSERT INTO psscx.car_mun (
-						cod_municipio,
-						municipio,
+				INSERT INTO pssc.imoveis_mun (
+						car,
 						uf,
+						municipio,
+						cod_municipio,
 						geom
 					)
 					SELECT
-							x.cod_municipio		as cod_municipio,
-							x.municipio			as municipio,
-							x.uf				as uf,
-							ST_Union(x.geom,c.geom)
+							i.car				AS car,
+							x.uf				AS uf,
+							x.municipio			AS municipio,
+							x.cod_municipio		AS cod_municipio,
+							ST_Multi(ST_CollectionExtract(ST_MakeValid(ST_Intersection(x.geom,i.geom)), 3))
 						FROM
-							psscx.temp_car_mun c
+							pssc.imoveis i
 						WHERE
-							c.cod_municipio=x.cod_municipio
+							ST_Intersects(x.geom,i.geom)
 				;
 			END LOOP;
 		END LOOP;
 	END;
 $$;
+
+
+
