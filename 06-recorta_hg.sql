@@ -1,9 +1,9 @@
 -- ================================================================================
-do $$ begin	raise info '02 - Recorta Reserva Legal
+do $$ begin	raise info '06 - Hidrografia
 
 
 '; end; $$;
--- Recorta o polígono de Reserva Legal por propriedade rural
+-- Recorta o polígono de Hidrografia por propriedade rural
 -- ================================================================================
 
 DO $$
@@ -17,8 +17,8 @@ DO $$
 		tabela_alvo text;
 		municipiosx text;
     BEGIN
-		tabela_alvo='rl';
-		tabela_fonte='reserva_legal';
+		tabela_alvo='hg';
+		tabela_fonte='hidrografia';
 		EXECUTE FORMAT ('
 			DROP TABLE IF EXISTS pssc.%s
 		', tabela_alvo);
