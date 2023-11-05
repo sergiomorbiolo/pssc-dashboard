@@ -3,8 +3,8 @@ do $$ begin	raise info 'x01 - Filtra e Aglutina imóveis por município'; end; $
 -- Aglutina os imóveis registrados no CAR para cada município
 -- ================================================================================
 
-DROP TABLE IF EXISTS psscx.car_mun;
-CREATE TABLE IF NOT EXISTS psscx.car_mun
+DROP TABLE IF EXISTS psscx.temp_car_mun;
+CREATE TABLE IF NOT EXISTS psscx.temp_car_mun
 (
     cod_municipio text COLLATE pg_catalog."default",
     municipio text COLLATE pg_catalog."default",
@@ -32,7 +32,7 @@ DO $$
 		LOOP
 			RAISE INFO '-- % - %', upper(x.uf), x.uf_nome;
 			EXECUTE format('
-				INSERT INTO psscx.car_mun
+				INSERT INTO psscx.temp_car_mun
 				select cod_mun as cod_municipio,
 					nom_munici as municipio,
 					cod_estado as uf,
