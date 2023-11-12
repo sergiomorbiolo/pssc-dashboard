@@ -19,7 +19,7 @@ DO $$
 				from 
 					psscx.car_mun
 		LOOP
-	
+-- 			RAISE INFO '%', z.maximo;
 	
 	
 			FOR x IN
@@ -28,12 +28,13 @@ DO $$
 						cod_municipio, 
 						municipio, 
 						uf, 
-						ST_Buffer(geom,-0.00001) as geom
+						geom
 					FROM 
 						psscx.car_mun
 					ORDER BY 
 						id
 			LOOP
+-- 				RAISE INFO '%', x.id;
 				munx:=null;
 				numero:=0;
 				FOR y IN
@@ -54,7 +55,7 @@ DO $$
 						municipios=munx
 					WHERE
 						cod_municipio=x.cod_municipio;
-				raise info '%/% - %', x.id, z.maximo, x.cod_municipio;
+				RAISE INFO '%/% %', x.id, z.maximo, x.municipio;
 			END LOOP;
 		
 		
