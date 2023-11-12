@@ -72,9 +72,9 @@ DO $$
 					WHERE
 						ST_Intersects(i.geometry,c.geom) 
 						AND c.bioma=''Cerrado'' 
-						AND i.nom_munici=''Sorriso'' 
-						AND i.cod_estado=''MT''
-						AND i.num_modulo>=4
+						-- AND i.nom_munici=''Sorriso'' 
+						-- AND i.cod_estado=''MT''
+						-- AND i.num_modulo>=4
 					ORDER BY
 						i.cod_imovel'
 			);
