@@ -43,10 +43,12 @@ DO $$
 						i.car			AS car,
 						lower(i.uf)		AS uf, 
 						i.cod_municipio	AS cod_municipio,
--- 						i.municipios	AS municipios,
+						m.municipios	AS municipios,
 						i.geom 			AS geom 
 					FROM 
-						pssc.imoveis i
+						pssc.imoveis i LEFT JOIN
+						psscx.car_mun m ON
+						i.cod_municipio = m.cod_municipio
 					ORDER BY
 						id
 			LOOP
@@ -54,8 +56,8 @@ DO $$
 					
 					barra=((x.id*50)/y.maxid);
 					porcentagem=to_char(((x.id*100.00)/y.maxid)::numeric, '990D99');
--- 					municipiosx=array_to_string(x.municipios, ''',''');
-					municipiosx=x.cod_municipio;
+					municipiosx=array_to_string(x.municipios, ''',''');
+-- 					municipiosx=x.cod_municipio;
 					EXECUTE format(
 						'INSERT INTO
 							pssc.%s
@@ -68,7 +70,7 @@ DO $$
 								car_%s.%s_%s a
 							WHERE
 								ST_Intersects(a.geometry::geometry,%L)
-								-- AND a.cod_mun in (''%s'')
+								AND a.cod_mun in (''%s'')
 							ORDER BY
 								id desc',
 						tabela_alvo,
@@ -102,7 +104,7 @@ DO $$
 									car_%s.%s_%s a
 								WHERE
 									ST_Intersects(ST_Makevalid(a.geometry)::geometry,%L)
-									--AND a.cod_mun in (''%s'')
+									AND a.cod_mun in (''%s'')
 								ORDER BY
 									id desc',
 							tabela_alvo,
