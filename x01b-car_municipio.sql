@@ -6,11 +6,12 @@ do $$ begin	raise info 'x01 - Filtra e Aglutina imóveis por município'; end; $
 DROP TABLE IF EXISTS psscx.car_mun;
 CREATE TABLE IF NOT EXISTS psscx.car_mun
 (
-	id serial,
-    cod_municipio text COLLATE pg_catalog."default",
-    municipio text COLLATE pg_catalog."default",
-    uf text COLLATE pg_catalog."default",
-    geom geometry(Geometry,4674)
+	id 				serial,
+    cod_municipio 	text,
+    municipio 		text,
+	municipios		varchar[],
+	uf 				text,
+    geom 			geometry(Geometry,4674)
 );
 
 
