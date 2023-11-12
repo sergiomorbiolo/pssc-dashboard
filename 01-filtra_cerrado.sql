@@ -79,5 +79,8 @@ DO $$
 						i.cod_imovel'
 			);
 		END LOOP;
+	END;
+$$;
+
 		
 		
