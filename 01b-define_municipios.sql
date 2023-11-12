@@ -11,6 +11,8 @@ DO $$
 		w record;
 		munx varchar[];
 		j int:=0;
+		barra integer;
+		porcentagem text;
     BEGIN
 	
 		
@@ -30,7 +32,10 @@ DO $$
 					ORDER BY
 						id
 			LOOP
-				RAISE INFO '-- Definição de Municípios: Imóvel %/%', y.id, w.maximo;
+				barra=((y.id*50)/w.maximo);
+				porcentagem=to_char(((y.id*100.00)/w.maximo)::numeric, '990D99');
+				RAISE INFO '-- Definição de Municípios: Imóvel %/%
+	% %░%', y.id, w.maximo,  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra);
 				munx:=null;
 				j:=0;
 				FOR z IN
