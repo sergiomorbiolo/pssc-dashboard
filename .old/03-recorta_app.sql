@@ -1,9 +1,9 @@
 -- ================================================================================
-do $$ begin	raise info '02 - Recorta Reserva Legal
+do $$ begin	raise info '02 - Recorta APP
 
 
 '; end; $$;
--- Recorta o polígono de Reserva Legal por propriedade rural
+-- Recorta o polígono de APP por propriedade rural
 -- ================================================================================
 
 DO $$
@@ -17,8 +17,8 @@ DO $$
 		tabela_alvo text;
 		municipiosx text;
     BEGIN
-		tabela_alvo='hg';
-		tabela_fonte='hidrografia';
+		tabela_alvo='app';
+		tabela_fonte='app';
 		EXECUTE FORMAT ('
 			DROP TABLE IF EXISTS pssc.%s
 		', tabela_alvo);
@@ -43,7 +43,7 @@ DO $$
 						i.car			AS car,
 						lower(i.uf)		AS uf, 
 						i.cod_municipio	AS cod_municipio,
--- 						i.municipios	AS municipios,
+						i.municipios	AS municipios,
 						i.geom 			AS geom 
 					FROM 
 						pssc.imoveis i
@@ -54,8 +54,7 @@ DO $$
 					
 					barra=((x.id*50)/y.maxid);
 					porcentagem=to_char(((x.id*100.00)/y.maxid)::numeric, '990D99');
--- 					municipiosx=array_to_string(x.municipios, ''',''');
-					municipiosx=x.cod_municipio;
+					municipiosx=array_to_string(x.municipios, ''',''');
 					EXECUTE format(
 						'INSERT INTO
 							pssc.%s
@@ -68,7 +67,7 @@ DO $$
 								car_%s.%s_%s a
 							WHERE
 								ST_Intersects(a.geometry::geometry,%L)
-								-- AND a.cod_mun in (''%s'')
+								AND a.cod_mun in (''%s'')
 							ORDER BY
 								id desc',
 						tabela_alvo,
@@ -102,7 +101,7 @@ DO $$
 									car_%s.%s_%s a
 								WHERE
 									ST_Intersects(ST_Makevalid(a.geometry)::geometry,%L)
-									--AND a.cod_mun in (''%s'')
+									AND a.cod_mun in (''%s'')
 								ORDER BY
 									id desc',
 							tabela_alvo,
