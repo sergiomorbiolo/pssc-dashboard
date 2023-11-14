@@ -1,5 +1,5 @@
 -- ================================================================================
-do $$ begin	raise info '02 - Recorta Reserva Legal
+do $$ begin	raise info '02f - Recorta Nascentes
 
 
 '; end; $$;
@@ -17,8 +17,8 @@ DO $$
 		tabela_alvo text;
 		municipiosx text;
     BEGIN
-		tabela_alvo='rl';
-		tabela_fonte='reserva_legal';
+		tabela_alvo='noa';
+		tabela_fonte='nascente_olho_dagua';
 		EXECUTE FORMAT ('
 			DROP TABLE IF EXISTS pssc.%s
 		', tabela_alvo);
@@ -62,21 +62,20 @@ DO $$
 						'INSERT INTO
 							pssc.%s
 						SELECT
-								%s																						as id, 
-								%L																						as car, 
-								ST_Multi(ST_CollectionExtract(ST_Union(ST_Intersection(a.geometry::geometry, %L)),3))	as geom,
-								''ok''																					as erro
+								%s			as id, 
+								%L			as car, 
+								a.geometry	as geom,
+								''ok''		as erro
 							FROM 
 								car_%s.%s_%s a
 							WHERE
-								ST_Intersects(a.geometry::geometry,%L)
+								ST_within(a.geometry::geometry,%L)
 								AND a.cod_mun in (''%s'')
 							ORDER BY
 								id desc',
 						tabela_alvo,
 						x.id,
 						x.car,
-						x.geom,
 						x.uf,
 						x.uf,
 						tabela_fonte,
@@ -98,19 +97,18 @@ DO $$
 							SELECT
 									%s																									as id, 
 									%L																									as car, 
-									ST_Multi(ST_CollectionExtract(ST_Union(ST_Intersection(ST_Makevalid(a.geometry)::geometry, %L)),3))	as geom,
+									a.geom	as geom,
 									%L																									as erro
 								FROM 
 									car_%s.%s_%s a
 								WHERE
-									ST_Intersects(ST_Makevalid(a.geometry)::geometry,%L)
+									ST_Within(ST_Makevalid(a.geometry)::geometry,%L)
 									AND a.cod_mun in (''%s'')
 								ORDER BY
 									id desc',
 							tabela_alvo,
 							x.id,
 							x.car,
-							x.geom,
 							erro,
 							x.uf,
 							x.uf,
