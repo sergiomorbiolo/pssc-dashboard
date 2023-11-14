@@ -1,9 +1,9 @@
 -- ================================================================================
-do $$ begin	raise info '02 - Recorta Reserva Legal
+do $$ begin	raise info '02b - Recorta APP
 
 
 '; end; $$;
--- Recorta o polígono de Reserva Legal por propriedade rural
+-- Recorta o polígono de APP por propriedade rural
 -- ================================================================================
 
 DO $$
