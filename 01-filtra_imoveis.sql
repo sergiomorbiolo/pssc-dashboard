@@ -1,6 +1,6 @@
 -- ================================================================================
-do $$ begin	raise info '01 - Filtra imóveis do Cerrado'; end; $$;
--- Filtra imóveis que estão no cerrado, baseado no polígono CAR
+do $$ begin	raise info '01 - Filtra imóveis'; end; $$;
+-- Filtra imóveis para a análise, baseado no polígono CAR
 -- ================================================================================
 
 DROP TABLE IF EXISTS pssc.imoveis;
@@ -73,7 +73,7 @@ DO $$
 						ST_Intersects(i.geometry,c.geom) 
 						AND c.bioma=''Cerrado'' 
 						-- AND i.nom_munici=''Sorriso'' 
-						-- AND i.cod_estado=''MT''
+						AND i.cod_estado=''MG''
 						-- AND i.num_modulo>=4
 					ORDER BY
 						i.cod_imovel'

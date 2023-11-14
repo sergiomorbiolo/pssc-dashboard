@@ -17,8 +17,8 @@ DO $$
 		tabela_alvo text;
 		municipiosx text;
     BEGIN
-		tabela_alvo='rl';
-		tabela_fonte='reserva_legal';
+		tabela_alvo='app';
+		tabela_fonte='app';
 		EXECUTE FORMAT ('
 			DROP TABLE IF EXISTS pssc.%s
 		', tabela_alvo);
