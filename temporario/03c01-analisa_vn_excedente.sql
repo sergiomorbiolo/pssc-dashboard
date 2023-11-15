@@ -18,10 +18,12 @@ DO $$
 		ALTER TABLE ptemp.vn DROP COLUMN IF EXISTS vn_area;
 		ALTER TABLE ptemp.vn DROP COLUMN IF EXISTS vn_excedente_area;
 		ALTER TABLE ptemp.vn DROP COLUMN IF EXISTS vn_excedente_geom;
+		ALTER TABLE ptemp.vn DROP COLUMN IF EXISTS app_rl_geom;
 		
 		ALTER TABLE ptemp.vn ADD COLUMN IF NOT EXISTS vn_area double precision;
 		ALTER TABLE ptemp.vn ADD COLUMN IF NOT EXISTS vn_excedente_area double precision;
 		ALTER TABLE ptemp.vn ADD COLUMN IF NOT EXISTS vn_excedente_geom geometry(Geometry,4674);
+		ALTER TABLE ptemp.vn ADD COLUMN IF NOT EXISTS app_rl_geom geometry(Geometry,4674);
 
 		FOR y IN
 			SELECT
