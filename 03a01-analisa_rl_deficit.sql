@@ -51,14 +51,21 @@ DO $$
 				barra=((x.id*50)/y.maximo);
 				porcentagem=to_char(((x.id*100.00)/y.maximo)::numeric, '990D99');
 				RAISE INFO '% %░%     %',  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
+				WITH temp AS (
+					SELECT
+						ST_Difference(x.rl_geom,x.vn_geom)		AS deficit,
+						ST_Intersection(x.rl_geom,x.vn_geom)	AS coberta
+				)
 				UPDATE
 						pssc.rl
 					SET
 						rl_area=(ST_Area(x.rl_geom::geography)/10000),
-						rl_deficit_area=(ST_Area(ST_Difference(x.rl_geom,x.vn_geom)::geography)/10000),
-						rl_coberta_area=(ST_Area(ST_Intersection(x.rl_geom,x.vn_geom)::geography)/10000),
-						rl_deficit_geom=ST_Difference(x.rl_geom,x.vn_geom),
-						rl_coberta_geom=ST_Intersection(x.rl_geom,x.vn_geom)
+						rl_deficit_area=(ST_Area(temp.deficit::geography)/10000),
+						rl_coberta_area=(ST_Area(temp.coberta::geography)/10000),
+						rl_deficit_geom=temp.deficit,
+						rl_coberta_geom=temp.coberta
+					FROM
+						temp
 					WHERE
 						car=x.rl_car;
 			END LOOP;
