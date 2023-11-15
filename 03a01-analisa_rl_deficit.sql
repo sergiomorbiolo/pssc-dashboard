@@ -18,15 +18,11 @@ DO $$
     BEGIN
 		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_area;
 		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_deficit_area;
-		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_coberta_area;
 		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_deficit_geom;
-		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_coberta_geom;
 		
 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_area double precision;
 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_area double precision;
-		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_coberta_area double precision;
 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_geom geometry(Geometry,4674);
-		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_coberta_geom geometry(Geometry,4674);
 
 		FOR y IN
 			SELECT
@@ -54,17 +50,14 @@ DO $$
 				RAISE INFO '% %░%     %',  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
 				WITH temp AS (
 					SELECT
-						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit,
-						ST_Multi(ST_CollectionExtract(ST_Union(ST_Intersection(x.rl_geom,x.vn_geom)), 3))				AS coberta
+						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit
 				)
 				UPDATE
 						pssc.rl
 					SET
 						rl_area=(ST_Area(x.rl_geom::geography)/10000),
 						rl_deficit_area=(ST_Area(temp.deficit::geography)/10000),
-						rl_coberta_area=(ST_Area(temp.coberta::geography)/10000),
-						rl_deficit_geom=temp.deficit,
-						rl_coberta_geom=temp.coberta
+						rl_deficit_geom=temp.deficit
 					FROM
 						temp
 					WHERE
