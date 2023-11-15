@@ -14,6 +14,7 @@ DO $$
 		barra integer;
 		porcentagem text;
 		erro text;
+
     BEGIN
 		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_area;
 		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_deficit_area;
@@ -46,15 +47,15 @@ DO $$
 						rl.car=vn.car
 					ORDER BY
 						rl.id
--- 					limit 10
+-- 					limit 100
 			LOOP
 				barra=((x.id*50)/y.maximo);
 				porcentagem=to_char(((x.id*100.00)/y.maximo)::numeric, '990D99');
 				RAISE INFO '% %░%     %',  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
 				WITH temp AS (
 					SELECT
-						ST_Difference(x.rl_geom,x.vn_geom)		AS deficit,
-						ST_Intersection(x.rl_geom,x.vn_geom)	AS coberta
+						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit,
+						ST_Multi(ST_CollectionExtract(ST_Union(ST_Intersection(x.rl_geom,x.vn_geom)), 3))				AS coberta
 				)
 				UPDATE
 						pssc.rl
