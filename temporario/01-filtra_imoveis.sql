@@ -74,7 +74,7 @@ DO $$
 						AND c.bioma=''Cerrado'' 
 						-- AND i.nom_munici=''Sorriso'' 
 						-- AND i.cod_estado=''BA''
-						AND i.cod_estado in (''BA'',''PI'')
+						AND i.cod_estado in (''BA'')
 						-- AND i.num_modulo>=4
 					ORDER BY
 						i.cod_imovel'
