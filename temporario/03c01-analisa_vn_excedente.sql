@@ -53,14 +53,12 @@ DO $$
 				RAISE INFO '% %░%     %',  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.vn_car;
 				WITH temp AS (
 					SELECT
-						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.vn_geom,ST_Union(x.rl_geom,x.app_geom),0.000000001)), 3))		AS excedente
+						ST_Multi(ST_CollectionExtract(ST_Union(x.rl_geom,x.app_geom)))		AS app_rl
 				)
 				UPDATE
 						ptemp.vn
 					SET
-						vn_area=(ST_Area(x.vn_geom::geography)/10000),
-						vn_excedente_area=(ST_Area(temp.excedente::geography)/10000),
-						vn_excedente_geom=temp.excedente
+						app_rl_geom=temp.app_rl
 					FROM
 						temp
 					WHERE
