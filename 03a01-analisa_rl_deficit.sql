@@ -47,7 +47,7 @@ DO $$
 			LOOP
 				barra=((x.id*50)/y.maximo);
 				porcentagem=to_char(((x.id*100.00)/y.maximo)::numeric, '990D99');
-				RAISE INFO '% %░%     %',  porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
+				RAISE INFO '%/% % %░%     %', x.id, y.maximo, porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
 				WITH temp AS (
 					SELECT
 						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit
