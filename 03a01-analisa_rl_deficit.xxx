@@ -48,17 +48,16 @@ DO $$
 				barra=((x.id*50)/y.maximo);
 				porcentagem=to_char(((x.id*100.00)/y.maximo)::numeric, '990D99');
 				RAISE INFO '%/% % %░%     %', x.id, y.maximo, porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.rl_car;
--- 				WITH temp AS (
--- 					SELECT
--- 						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit
--- 				)
+				WITH temp AS (
+					SELECT
+						ST_Multi(ST_CollectionExtract(ST_Union(ST_Difference(x.rl_geom,x.vn_geom,0.000000001)), 3))		AS deficit
+				)
 				UPDATE
 						pssc.rl
 					SET
--- 						rl_area=(ST_Area(x.rl_geom::geography)/10000),
--- 						rl_deficit_area=(ST_Area(temp.deficit::geography)/10000),
--- 						rl_deficit_geom=temp.deficit
-						rl_deficit_geom=ST_Difference(x.rl_geom,x.vn_geom)
+						rl_area=(ST_Area(x.rl_geom::geography)/10000),
+						rl_deficit_area=(ST_Area(temp.deficit::geography)/10000),
+						rl_deficit_geom=temp.deficit
 					FROM
 						temp
 					WHERE
