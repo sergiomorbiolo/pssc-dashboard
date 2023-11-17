@@ -83,13 +83,25 @@ do $$ begin	raise info '03a - Analisa Reserva legal';
 -- 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_area double precision;
 -- 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_geom geometry(Geometry,4674);
 
+		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS vn_geom;
+		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_deficit_geom;
+		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS vn_geom geometry(Geometry,4674);
+		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_geom geometry(Geometry,4674);
+
+do $$ begin	raise info 'parte 1: Copia VN '; end; $$;
+
 
 				UPDATE
 						pssc.rl
 					SET
-						rl_deficit_geom=ST_Difference(rl.geom,vn.geom)
+						vn_geom=vn.geom
 					FROM
-						pssc.rl rl INNER JOIN
-						pssc.vn vn ON
-						rl.car=vn.car
+						pssc.vn vn;
+
+do $$ begin	raise info 'parte 1: Calcula VN '; end; $$;
+
+				UPDATE
+						pssc.rl
+					SET
+						rl_deficit_geom=ST_Difference(geom,vn_geom);
 
