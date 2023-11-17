@@ -59,8 +59,8 @@ DO $$
 -- 						rl_deficit_area=(ST_Area(temp.deficit::geography)/10000),
 -- 						rl_deficit_geom=temp.deficit
 						rl_deficit_geom=ST_Difference(x.rl_geom,x.vn_geom)
-					FROM
-						temp
+-- 					FROM
+-- 						temp
 					WHERE
 						car=x.rl_car;
 			END LOOP;
