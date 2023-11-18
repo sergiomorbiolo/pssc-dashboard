@@ -8,6 +8,7 @@ DO $$
 	BEGIN
         FOR x IN 
 			SELECT 
+				id,
 				cod_municipio,
 				municipio,
 				municipios
@@ -20,7 +21,7 @@ DO $$
 					municipios=x.municipios
 				WHERE
 					cod_municipio=x.cod_municipio;
-			RAISE INFO '-- % - %', x.municipio, x.municipios;
+			RAISE INFO '-- % % - %', x.id, x.municipio, x.municipios;
 		END LOOP;
 	END;
 $$;
