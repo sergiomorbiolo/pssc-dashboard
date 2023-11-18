@@ -83,25 +83,58 @@ do $$ begin	raise info '03a - Analisa Reserva legal';
 -- 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_area double precision;
 -- 		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_geom geometry(Geometry,4674);
 
-		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS vn_geom;
-		ALTER TABLE pssc.rl DROP COLUMN IF EXISTS rl_deficit_geom;
-		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS vn_geom geometry(Geometry,4674);
-		ALTER TABLE pssc.rl ADD COLUMN IF NOT EXISTS rl_deficit_geom geometry(Geometry,4674);
+DO $$
+	DECLARE
+		x record;
+    BEGIN		
+		DROP TABLE IF EXISTS pssc.rl_vn;
+		CREATE TABLE IF NOT EXISTS pssc.rl_vn
+		(
+			id integer,
+			car character varying(70),
+			geom geometry(Geometry,4674),
+			erro text,
+			vn_geom geometry(Geometry,4674),
+			rl_deficit_geom geometry(Geometry,4674)
+		);		
+		FOR x IN
+			SELECT 
+					rl.id		as id, 
+					rl.car		as rl_car, 
+					rl.erro		as rl_erro,
+					rl.geom		as rl_geom,
+					vn.geom		as vn_geom
+				FROM 
+					pssc.rl rl INNER JOIN
+					pssc.vn vn ON
+					rl.car=vn.car
+				ORDER BY
+					rl.id
+-- 					limit 100
+		LOOP
+		INSERT INTO 
+				pssc.rl(
+					id, 
+					car, 
+					geom, 
+					erro, 
+					vn_geom
+				)
+			VALUES (
+				x.id, 
+				x.rl_car, 
+				x.rl_geom, 
+				x.rl_erro, 
+				x.vn_geom
+			);
+			RAISE INFO '% %', x.id, x.rl_car;
+		END LOOP;
+	END;
+$$;
 
-do $$ begin	raise info 'parte 1: Copia VN '; end; $$;
 
 
-				UPDATE
-						pssc.rl
-					SET
-						vn_geom=vn.geom
-					FROM
-						pssc.vn vn;
 
-do $$ begin	raise info 'parte 1: Calcula VN '; end; $$;
 
-				UPDATE
-						pssc.rl
-					SET
-						rl_deficit_geom=ST_Difference(geom,vn_geom);
+
 

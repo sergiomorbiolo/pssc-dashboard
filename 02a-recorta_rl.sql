@@ -83,7 +83,7 @@ DO $$
 						x.geom,
 						municipiosx
 					);
-					RAISE INFO '%/% % %░%     %', x.id, y.maxid. porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.car;
+					RAISE INFO '%/% % %░%     %', x.id, y.maxid, porcentagem || '%', repeat('░',barra), repeat('▬',50-barra), x.car;
 					RAISE INFO '
 					
 					';
