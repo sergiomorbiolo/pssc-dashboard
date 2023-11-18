@@ -10,8 +10,8 @@ DO $$
 		x record;
 		y record;
 		erro text;
-		tabela_fonte text:='rl';
-		tabela_alvo text:='reserva_legal';
+		tabela_fonte text:='reserva_legal';
+		tabela_alvo text:='rl';
 		municipiosx text;
     BEGIN
 		FOR y IN
@@ -26,12 +26,22 @@ DO $$
 				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_erro;
 				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_deficit_geom;
 				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_deficit_area;
+				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_geom;
+				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_area;
+				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_erro;
+				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_deficit_geom;
+				ALTER TABLE pssc.imoveis_%s DROP COLUMN IF EXISTS %s_deficit_area;
 			', 
 				y.uf, tabela_alvo,
 				y.uf, tabela_alvo,
 				y.uf, tabela_alvo,
 				y.uf, tabela_alvo,
-				y.uf, tabela_alvo
+				y.uf, tabela_alvo,
+				y.uf, tabela_fonte,
+				y.uf, tabela_fonte,
+				y.uf, tabela_fonte,
+				y.uf, tabela_fonte,
+				y.uf, tabela_fonte
 			);
 			EXECUTE FORMAT ('
 				ALTER TABLE pssc.imoveis_%s ADD COLUMN IF NOT EXISTS %s_geom geometry(Geometry,4674);
@@ -60,7 +70,7 @@ DO $$
 						uf=upper(y.uf)
 					ORDER BY
 						id
-	-- 				LIMIT 10
+	 				LIMIT 10
 			LOOP
 				BEGIN
 					municipiosx=array_to_string(x.municipios, ''',''');
