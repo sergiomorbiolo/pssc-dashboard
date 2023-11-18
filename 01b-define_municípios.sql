@@ -14,6 +14,8 @@ DO $$
 				municipios
 			FROM
 				psscx.car_mun
+			ORDER BY
+				id
 		LOOP
 			UPDATE
 					pssc.imoveis
