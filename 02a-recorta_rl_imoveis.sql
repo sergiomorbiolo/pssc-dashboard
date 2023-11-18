@@ -70,7 +70,7 @@ DO $$
 						uf=upper(y.uf)
 					ORDER BY
 						id
-	 				LIMIT 10
+-- 	 				LIMIT 10
 			LOOP
 				BEGIN
 					municipiosx=array_to_string(x.municipios, ''',''');
