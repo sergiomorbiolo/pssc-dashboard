@@ -16,6 +16,7 @@ DO $$
     BEGIN
 		FOR y IN
 			SELECT uf FROM pssc.ufs ORDER BY uf
+			LIMIT 1
 		LOOP
 		
 		
@@ -70,7 +71,7 @@ DO $$
 						uf=upper(y.uf)
 					ORDER BY
 						id
--- 	 				LIMIT 10
+	 				LIMIT 10
 			LOOP
 				BEGIN
 					municipiosx=array_to_string(x.municipios, ''',''');
@@ -150,8 +151,9 @@ DO $$
 							erro=SQLERRM;
 							municipiosx=array_to_string(x.municipios, ''',''');
 							RAISE INFO '% - %
+							%
 
-							', x.id, x.car;
+							', x.id, x.car, erro;
 							EXECUTE format(
 								'UPDATE
 										pssc.imoveis_%s
